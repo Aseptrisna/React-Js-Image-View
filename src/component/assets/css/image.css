@@ -1,0 +1,13 @@
+/* CSS Kustom */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .list-group-item {
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+  }
+  
