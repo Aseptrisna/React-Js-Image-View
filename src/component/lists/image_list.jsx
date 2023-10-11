@@ -1,46 +1,117 @@
-import React from 'react';
-import '../assets/css/image.css';
-import { Button } from 'react-bootstrap';
-
+import React, { useState, useEffect } from "react";
+import "../assets/css/image.css";
+import Service from "../service";
+import Icon from "../assets/image/sand-clock.png";
 
 function ImageList() {
-  const image_data = [
-    { nama: "Asep Trisna Setiawan", tanggal: "2023-10-04", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/satu.jpg" },
-    { nama: "Bayu Setyo Nugroho", tanggal: "2023-10-05", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/dua.jpg" },
-    { nama: "Yogi Andi", tanggal: "2023-10-06", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/tiga.jpg" },
-    { nama: "Faiza Kailani K", tanggal: "2023-10-07", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/empat.jpg" },
-    { nama: "M Rizki Fahreza", tanggal: "2023-10-08", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/lima.jpg" },
-    { nama: "M Aji Perdana", tanggal: "2023-10-09", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/enam.jpg" },
-    { nama: "Ardi Hdayat", tanggal: "2023-10-10", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/tujuh.jpg" },
-    { nama: "Diko Prasojo", tanggal: "2023-10-11", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/delapan.jpg" },
-    { nama: "Afanin Ryandana", tanggal: "2023-10-12", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/sembilan.jpg" },
-    { nama: "Nawa K", tanggal: "2023-10-13", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/sepuluh.jpg" },
-    { nama: "Agung Yusuf Wibowo", tanggal: "2023-10-14", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/sebelas.jpg" },
-    { nama: "Adnan Darwanto", tanggal: "2023-10-15", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/duabelas.jpg" },
-    { nama: "M Fahmi", tanggal: "2023-10-16", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/0f32c4ec-8146-43dd-937e-a9168d1e52b11692931489-PPTIK.jpg" },
-    { nama: "Sintia Rahmawati", tanggal: "2023-10-17", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/empatbelas.jpg" },
-    { nama: "M Daffa", tanggal: "2023-10-18", imageUrl: "https://dev-kawaldesa.pptik.id/data/kehadiran/image/fe5e0b5a-1d4e-4cc0-b49a-e2d1931a3ac21692162411-PPTIK.jpg" },
-  ];
-  
+  const [imageData, setImageData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [imagesPerPage] = useState(6);
+  const [totalPages, setTotalPages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const data = {
+      page: currentPage,
+      limit: imagesPerPage,
+    };
+    setTimeout(() => {
+      getData(data);
+    }, 2000);
+  }, []);
+
+  const getData = async (data) => {
+    Service.getData(data)
+      .then((data) => {
+        setLoading(false);
+        setImageData(data.data.history);
+        setTotalPages(data.data.totalPages);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setLoading(true);
+      });
+  };
+
+  const paginate = (pageNumber) => {
+    setLoading(true);
+    setCurrentPage(pageNumber);
+    const data = {
+      page: pageNumber,
+      limit: imagesPerPage,
+    };
+    setTimeout(() => {
+      getData(data);
+    }, 2000);
+  };
   return (
     <div className="container">
-    {/* <h1 className="my-4">Daftar Gambar Kamera</h1> */}
-    <div className="row">
-      {image_data.map((image, index) => (
-        <div className="col-md-4" key={index}>
-          <div className="card mb-4" border="warning">
-          <img src={image.imageUrl} className="card-img-top" alt={image.nama} style={{ margin: 'auto', display: 'block',width: '400px', height: '300px',marginTop:'10px' }}/>
-            <div className="card-body">
-              <h5 className="card-title">{image.nama}</h5>
-              <p className="card-text">Tanggal: {image.tanggal}</p>
-            </div>
-            
+      {loading ? (
+        <div className="loading">
+          <div className="spinner">
+            <img
+              src={Icon}
+              className="card-img-top img-fluid"
+              alt=""
+              style={{
+                margin: "auto",
+                display: "block",
+                width: "80px",
+                height: "80px",
+                marginTop: "20px",
+                alignContent: "center",
+              }}
+            />
           </div>
         </div>
-      ))}
+      ) : (
+        <div className="container">
+          <div className="row">
+            {imageData.map((image, index) => (
+              <div className="col-md-4" key={index}>
+                <div className="card mb-4" border="warning">
+                  <img
+                    src={image.value}
+                    className="card-img-top img-fluid"
+                    alt={image.value}
+                    style={{
+                      margin: "auto",
+                      display: "block",
+                      width: "330px",
+                      height: "250px",
+                      marginTop: "20px",
+                      alignContent: "center",
+                    }}
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title">ID RFID:{image.guid}</h5>
+                    <p className="card-text">TIME: {image.datetime}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="pagination">
+            {Array.from(
+              { length: Math.ceil(totalPages / imagesPerPage) },
+              (_, index) => (
+                <div key={index}>
+                  <button
+                    className={index + 1 === currentPage ? "active" : ""}
+                    onClick={() => paginate(index + 1)}
+                  >
+                    {index + 1}
+                  </button>
+                </div>
+              )
+            )}
+          </div>
+          <div className="footer">
+            <p>&copy; 2023 PPTIK</p>
+          </div>
+        </div>
+      )}
     </div>
-  </div>
   );
 }
 

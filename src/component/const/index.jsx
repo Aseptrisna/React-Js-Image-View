@@ -1,0 +1,1 @@
+export const API_URL_SERVER = "https://hydro-connect.pptik.id/api/api.v1/";

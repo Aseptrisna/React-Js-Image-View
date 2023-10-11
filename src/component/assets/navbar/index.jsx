@@ -3,13 +3,13 @@ import Navbar from 'react-bootstrap/Navbar';
 
 function NavbarMain() {
   return (
-    <Navbar className="bg-body-tertiary">
+    <Navbar bg="light" data-bs-theme="light">
       <Container>
-        <Navbar.Brand href="#home">Smart Camera</Navbar.Brand>
+        <Navbar.Brand href="/">RFID - CAM</Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
-            Create By: <a href="#login">Asep Trisna Setiawan</a>
+            Create By: <a href="/">PPTIK Developer</a>
           </Navbar.Text>
         </Navbar.Collapse>
       </Container>
